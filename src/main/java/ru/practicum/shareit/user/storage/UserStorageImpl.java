@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.user.exception.EmailException;
+import ru.practicum.shareit.exception.EmailException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
@@ -17,23 +17,20 @@ public class UserStorageImpl implements IUserStorage {
     }
 
     @Override
-    public Optional<User> create(User user) {
+    public User create(User user) {
         long id = generateId();
         user.setId(id);
         users.put(id, user);
         emails.add(user.getEmail());
-        return Optional.of(user);
+        return user;
     }
 
     @Override
-    public Optional<User> update(User user) {
+    public User update(User user) {
         long userId = user.getId();
-        if (!users.containsKey(userId)) {
-            return Optional.empty();
-        }
         User updatingUser = users.get(userId);
         updateUser(updatingUser, user);
-        return Optional.of(updatingUser);
+        return updatingUser;
     }
 
     @Override

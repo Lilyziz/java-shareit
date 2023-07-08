@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class ItemStorageImpl implements IItemStorage {
@@ -17,22 +18,19 @@ public class ItemStorageImpl implements IItemStorage {
     }
 
     @Override
-    public Optional<Item> create(Item item) {
+    public Item create(Item item) {
         long id = generateId();
         item.setId(id);
         items.put(id, item);
-        return Optional.of(item);
+        return item;
     }
 
     @Override
-    public Optional<Item> update(Item item) {
+    public Item update(Item item) {
         long itemId = item.getId();
-        if (!items.containsKey(itemId)) {
-            return Optional.empty();
-        }
         Item updatingItem = items.get(itemId);
         updateItem(updatingItem, item);
-        return Optional.of(updatingItem);
+        return updatingItem;
     }
 
     @Override
@@ -42,13 +40,7 @@ public class ItemStorageImpl implements IItemStorage {
 
     @Override
     public List<Item> findAll(Long userId) {
-        List<Item> result = new ArrayList<>();
-        for (Item item : items.values()) {
-            if (item.getOwner().equals(userId)) {
-                result.add(item);
-            }
-        }
-        return result;
+        return items.values().stream().filter(item -> item.getOwner().equals(userId)).collect(Collectors.toList());
     }
 
     @Override

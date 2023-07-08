@@ -4,12 +4,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserMapper {
-    public UserDto makeDto(User user) {
+    public static UserDto makeDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
@@ -18,11 +18,6 @@ public class UserMapper {
     }
 
     public List<UserDto> makeDtoList(List<User> users) {
-        List<UserDto> result = new ArrayList<>();
-        for (User user : users) {
-            UserDto userDto = makeDto(user);
-            result.add(userDto);
-        }
-        return result;
+        return users.stream().map(UserMapper::makeDto).collect(Collectors.toList());
     }
 }
