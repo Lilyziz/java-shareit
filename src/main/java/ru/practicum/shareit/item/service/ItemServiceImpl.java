@@ -67,8 +67,7 @@ public class ItemServiceImpl implements IItemService {
         List<Comment> comments = commentRepository.findByItemId(itemId);
 
         if (item.getOwnerId().equals(userId)) {
-            LocalDateTime now = LocalDateTime.now();
-            return constructItemDtoForOwner(item, now, comments);
+            return constructItemDtoForOwner(item, LocalDateTime.now(), comments);
         }
         return ItemMapper.makeDto(item, null, null, comments);
     }
@@ -97,7 +96,7 @@ public class ItemServiceImpl implements IItemService {
     @Override
     public List<ItemDto> getAll(Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no user with this ID: " + userId));
 
         List<ItemDto> result = new ArrayList<>();
         fillItemDtoList(result, itemRepository.findAllByOwnerIdOrderByIdAsc(userId), userId);
@@ -122,7 +121,7 @@ public class ItemServiceImpl implements IItemService {
         List<User> result = users.stream().filter(user -> user.getId().equals(item.getOwnerId()))
                 .collect(Collectors.toList());
 
-        return result.size() > 0;
+        return !result.isEmpty();
     }
 
     private boolean isOwner(Item item) {

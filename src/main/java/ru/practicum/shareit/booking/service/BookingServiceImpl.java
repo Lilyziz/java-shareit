@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
 import static ru.practicum.shareit.booking.model.BookingStatus.REJECTED;
 
 @Service
@@ -31,17 +32,15 @@ public class BookingServiceImpl implements IBookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingMapper mapper;
-    private final Sort sort = Sort.by("start").descending();
+    private final Sort sortByStartDesc = Sort.by("start").descending();
 
     @Override
     @Transactional
     public Booking create(BookingPostDto booking, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no item with this ID: " + userId));
         Item item = itemRepository.findById(booking.getItemId()).orElseThrow(
-                () -> new NotFoundException("There is no item with this ID"));
-
-        validateBookingDates(booking);
+                () -> new NotFoundException("There is no item with this ID: " + booking.getItemId()));
 
         if (!item.getAvailable()) {
             throw new BadRequestException("Item is not available");
@@ -56,15 +55,15 @@ public class BookingServiceImpl implements IBookingService {
     @Transactional
     public Booking update(Long bookingId, boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
-                () -> new NotFoundException("There is no booking with this ID"));
+                () -> new NotFoundException("There is no booking with this ID: " + bookingId));
         Item item = itemRepository.findById(booking.getItem().getId()).orElseThrow(
-                () -> new NotFoundException("There is no item with this ID"));
+                () -> new NotFoundException("There is no item with this ID: " + booking.getItem().getId()));
 
         if (!item.getOwnerId().equals(userId)) {
             throw new NotFoundException("User is not the owner or a booker");
         }
 
-        BookingStatus status = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
+        BookingStatus status = approved ? APPROVED : REJECTED;
 
         if (booking.getStatus().equals(status)) {
             throw new BadRequestException("State already changed");
@@ -77,9 +76,9 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     public BookingDetailedDto getById(Long bookingId, Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no user with this ID: " + userId));
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
-                () -> new NotFoundException("There is no booking with this ID"));
+                () -> new NotFoundException("There is no booking with this ID: " + bookingId));
 
         boolean access = userId.equals(booking.getItem().getOwnerId()) || userId.equals(booking.getBooker().getId());
 
@@ -93,7 +92,7 @@ public class BookingServiceImpl implements IBookingService {
     public List<BookingDetailedDto> getAllByBooker(Long userId, String stateValue) {
 
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no user with this ID: " + userId));
 
         State state = State.getEnumValue(stateValue);
         List<Booking> bookings = new ArrayList<>();
@@ -101,26 +100,26 @@ public class BookingServiceImpl implements IBookingService {
         switch (state) {
             case REJECTED:
                 bookings = bookingRepository
-                        .findByBookerIdAndStatus(userId, REJECTED, sort);
+                        .findByBookerIdAndStatus(userId, REJECTED, sortByStartDesc);
                 break;
             case WAITING:
                 bookings = bookingRepository
-                        .findByBookerIdAndStatus(userId, BookingStatus.WAITING, sort);
+                        .findByBookerIdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
                 break;
             case CURRENT:
                 bookings = bookingRepository.findByBookerIdCurrent(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
+                        .findByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sortByStartDesc);
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
+                        .findByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sortByStartDesc);
                 break;
             case ALL:
                 bookings = bookingRepository
-                        .findByBookerId(userId, sort);
+                        .findByBookerId(userId, sortByStartDesc);
                 break;
         }
         return mapper.makeDtoList(bookings);
@@ -129,7 +128,7 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     public List<BookingDetailedDto> getAllByItemOwnerId(Long userId, String stateValue) {
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no user with this ID: " + userId));
 
         State state = State.getEnumValue(stateValue);
         List<Booking> bookings = new ArrayList<>();
@@ -137,34 +136,28 @@ public class BookingServiceImpl implements IBookingService {
         switch (state) {
             case REJECTED:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStatus(userId, REJECTED, sort);
+                        .findBookingByItemOwnerIdAndStatus(userId, REJECTED, sortByStartDesc);
                 break;
             case WAITING:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, sort);
+                        .findBookingByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
                 break;
             case CURRENT:
                 bookings = bookingRepository.findBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStartIsAfter(userId, LocalDateTime.now(), sort);
+                        .findBookingByItemOwnerIdAndStartIsAfter(userId, LocalDateTime.now(), sortByStartDesc);
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndEndIsBefore(userId, LocalDateTime.now(), sort);
+                        .findBookingByItemOwnerIdAndEndIsBefore(userId, LocalDateTime.now(), sortByStartDesc);
                 break;
             case ALL:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerId(userId, sort);
+                        .findBookingByItemOwnerId(userId, sortByStartDesc);
                 break;
         }
         return mapper.makeDtoList(bookings);
-    }
-
-    private void validateBookingDates(BookingPostDto booking) {
-        final LocalDateTime start = booking.getStart();
-        final LocalDateTime end = booking.getEnd();
-        BookingDatesValidator.validate(start, end);
     }
 }

@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.service.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.booking.validation.BookingDatesValidator;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ public class BookingController {
     @PostMapping
     public BookingDto create(@RequestHeader(header) Long userId, @RequestBody BookingPostDto bookingPostDto) {
         log.info("Create booking: {}", bookingPostDto.toString());
+        BookingDatesValidator.validate(bookingPostDto.getStart(), bookingPostDto.getEnd());
         return mapper.makeDto(bookingService.create(bookingPostDto, userId));
     }
 
@@ -52,6 +54,4 @@ public class BookingController {
         log.info("Update booking with id: {}", bookingId);
         return mapper.makeDto(bookingService.update(bookingId, approved, userId));
     }
-
-
 }

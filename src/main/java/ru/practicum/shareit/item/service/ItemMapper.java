@@ -38,7 +38,7 @@ public class ItemMapper {
         return dto;
     }
 
-    public Item makeModel(ItemDto itemDto, Long ownerId) {
+    public static Item makeModel(ItemDto itemDto, Long ownerId) {
         Item item = new Item();
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());

@@ -18,10 +18,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBookerId(Long bookerId, Sort sort);
 
-    @Query("select b from bookings b " +
-            "where b.booker.id = ?1 " +
-            "and b.start < ?2 " +
-            "and b.end > ?2 ")
+    @Query("SELECT b FROM bookings b " +
+            "WHERE b.booker.id = ?1 " +
+            "AND b.start < ?2 " +
+            "AND b.end > ?2 ")
     List<Booking> findByBookerIdCurrent(Long userId, LocalDateTime now);
 
     List<Booking> findBookingByItemOwnerIdAndStatus(Long bookerId, BookingStatus status, Sort sort);
@@ -32,20 +32,20 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findBookingByItemOwnerId(Long bookerId, Sort sort);
 
-    @Query("select b from bookings b " +
-            "where b.item.ownerId = ?1 " +
-            "and b.start < ?2 " +
-            "and b.end > ?2 " +
-            "order by b.start asc")
+    @Query("SELECT b FROM bookings b " +
+            "WHERE b.item.ownerId = ?1 " +
+            "AND b.start < ?2 " +
+            "AND b.end > ?2 " +
+            "ORDER BY b.start ASC")
     List<Booking> findBookingsByItemOwnerIdCurrent(Long userId, LocalDateTime now);
 
     List<Booking> findBookingByItemIdAndStartBefore(Long itemId, LocalDateTime now, Sort sort);
 
     List<Booking> findBookingByItemIdAndStartAfter(Long itemId, LocalDateTime now, Sort sort);
 
-    @Query("select b from bookings b " +
-            " where b.item.id = ?1 " +
-            " and b.booker.id = ?2" +
-            " and b.end < ?3")
+    @Query("SELECT b FROM bookings b " +
+            " WHERE b.item.id = ?1 " +
+            " AND b.booker.id = ?2" +
+            " AND b.end < ?3")
     List<Booking> findBookingsForAddComments(Long itemId, Long userId, LocalDateTime now);
 }

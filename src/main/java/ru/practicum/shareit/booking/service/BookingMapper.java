@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInItemDto;
@@ -13,14 +13,14 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class BookingMapper {
     public static BookingDto makeDto(Booking booking) {
         return new BookingDto(booking.getId(), booking.getStart(),
                 booking.getEnd(), booking.getStatus(), booking.getItem(), booking.getBooker());
     }
 
-    public Booking makeModel(BookingPostDto dto, Item item, User user) {
+    public static Booking makeModel(BookingPostDto dto, Item item, User user) {
         Booking booking = new Booking();
         booking.setStart(dto.getStart());
         booking.setEnd(dto.getEnd());
@@ -30,7 +30,7 @@ public class BookingMapper {
         return booking;
     }
 
-    public List<BookingDetailedDto> makeDtoList(List<Booking> bookings) {
+    public static List<BookingDetailedDto> makeDtoList(List<Booking> bookings) {
         return bookings.stream().map(BookingMapper::toDetailedDto).collect(Collectors.toList());
     }
 
