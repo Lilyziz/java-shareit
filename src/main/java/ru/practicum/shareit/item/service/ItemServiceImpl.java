@@ -139,12 +139,12 @@ public class ItemServiceImpl implements IItemService {
     }
 
     private ItemDto constructItemDtoForOwner(Item item, LocalDateTime now, List<Comment> comments) {
-        Booking lastBooking = bookingRepository.findBookingByItemIdAndStartBefore
-                        (item.getId(), now, Sort.by("start").descending())
+        Booking lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(
+                item.getId(), now, Sort.by("start").descending())
                 .stream().findFirst().orElse(null);
 
-        Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter
-                        (item.getId(), now, Sort.by("start").ascending())
+        Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter(
+                item.getId(), now, Sort.by("start").ascending())
                 .stream().filter(e -> !e.getStatus().equals(BookingStatus.REJECTED)).findFirst().orElse(null);
 
         return ItemMapper.makeDto(item, lastBooking, nextBooking, comments);
