@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ErrorHandlerTest {
     private final ErrorHandler handler = new ErrorHandler();
+
     @Test
     public void handleUnsupportedStatusExceptionTest() {
         UnsupportedStatusException e = new UnsupportedStatusException("Unknown state: UNSUPPORTED_STATUS");

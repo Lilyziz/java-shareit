@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingPostDto;
 import ru.practicum.shareit.booking.service.BookingMapper;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.booking.service.IBookingService;
 import ru.practicum.shareit.booking.validation.BookingDatesValidator;
 
