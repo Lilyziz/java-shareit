@@ -91,7 +91,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void createBookingTest() throws Exception {
+    public void createTest() throws Exception {
         //волшебство с stackOverflow для того чтоб всё работало с датами
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -113,7 +113,7 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void patchBookingTest() throws Exception {
+    public void updateTest() throws Exception {
         Booking responseDto = createBookingForTest(1L);
 
         when(bookingService.update(any(Long.class), any(Boolean.class), any(Long.class)))

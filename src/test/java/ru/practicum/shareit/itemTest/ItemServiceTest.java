@@ -193,7 +193,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void findItemsByRequestTest() {
+    public void getItemsByRequestTest() {
         when(itemRepository.search(any(String.class))).thenReturn(new ArrayList<>());
 
         List<ItemDto> result = itemService.getByRequest("request", 1L);
@@ -203,7 +203,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    public void findByEmptyRequest() {
+    public void getByEmptyRequest() {
         List<ItemDto> result = itemService.getByRequest("", 1L);
         assertNotNull(result);
         assertTrue(result.isEmpty());
