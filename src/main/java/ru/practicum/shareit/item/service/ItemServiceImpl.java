@@ -76,7 +76,7 @@ public class ItemServiceImpl implements IItemService {
     @Transactional
     public CommentDto createComment(CreateCommentDto dto, Long itemId, Long userId) {
         if (dto.getText().isBlank() || dto.getText().isEmpty()) {
-            throw new BadRequestException("");
+            throw new BadRequestException("Comment must exist");
         }
 
         Item item = itemRepository.findById(itemId).orElseThrow(
@@ -85,7 +85,7 @@ public class ItemServiceImpl implements IItemService {
                 () -> new NotFoundException("There is no user with this ID"));
 
         if (bookingRepository.findBookingsForAddComments(itemId, userId, LocalDateTime.now()).isEmpty()) {
-            throw new BadRequestException("");
+            throw new BadRequestException("There are no bookings for your comment");
         }
         Comment comment = CommentMapper.toModel(dto, item, author);
         comment = commentRepository.save(comment);
@@ -139,22 +139,21 @@ public class ItemServiceImpl implements IItemService {
 
     private ItemDto constructItemDtoForOwner(Item item, LocalDateTime now, List<Comment> comments) {
         Booking lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(
-                item.getId(), now, Sort.by("start").descending())
+                        item.getId(), now, Sort.by("start").descending())
                 .stream().findFirst().orElse(null);
 
         Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter(
-                item.getId(), now, Sort.by("start").ascending())
+                        item.getId(), now, Sort.by("start").ascending())
                 .stream().filter(e -> !e.getStatus().equals(BookingStatus.REJECTED)).findFirst().orElse(null);
 
         return ItemMapper.makeDto(item, lastBooking, nextBooking, comments);
     }
 
     private void fillItemDtoList(List<ItemDto> targetList, List<Item> foundItems, Long userId) {
-        LocalDateTime now = LocalDateTime.now();
         for (Item item : foundItems) {
             List<Comment> comments = commentRepository.findByItemIdOrderByCreatedDesc(item.getId());
             if (item.getOwnerId().equals(userId)) {
-                ItemDto dto = constructItemDtoForOwner(item, now, comments);
+                ItemDto dto = constructItemDtoForOwner(item, LocalDateTime.now(), comments);
                 targetList.add(dto);
             } else {
                 targetList.add(ItemMapper.makeDto(item, comments));

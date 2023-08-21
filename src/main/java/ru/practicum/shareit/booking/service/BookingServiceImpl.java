@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDetailedDto;
@@ -9,6 +11,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.validation.BookingDatesValidator;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -36,8 +39,7 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     @Transactional
     public Booking create(BookingPostDto booking, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no item with this ID: " + userId));
+        User user = userCheck(userId);
         Item item = itemRepository.findById(booking.getItemId()).orElseThrow(
                 () -> new NotFoundException("There is no item with this ID: " + booking.getItemId()));
 
@@ -74,8 +76,7 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public BookingDetailedDto getById(Long bookingId, Long userId) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID: " + userId));
+        userCheck(userId);
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new NotFoundException("There is no booking with this ID: " + bookingId));
 
@@ -88,75 +89,79 @@ public class BookingServiceImpl implements IBookingService {
     }
 
     @Override
-    public List<BookingDetailedDto> getAllByBooker(Long userId, String stateValue) {
-
-        userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID: " + userId));
+    public List<BookingDetailedDto> getAllByBooker(Long userId, String stateValue, int from, int size) {
+        userCheck(userId);
 
         State state = State.getEnumValue(stateValue);
         List<Booking> bookings = new ArrayList<>();
+        Pageable pageable = PageRequest.of(from / size, size, sortByStartDesc);
 
         switch (state) {
             case REJECTED:
                 bookings = bookingRepository
-                        .findByBookerIdAndStatus(userId, REJECTED, sortByStartDesc);
+                        .findByBookerIdAndStatus(userId, REJECTED, pageable).toList();
                 break;
             case WAITING:
                 bookings = bookingRepository
-                        .findByBookerIdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
+                        .findByBookerIdAndStatus(userId, BookingStatus.WAITING, pageable).toList();
                 break;
             case CURRENT:
                 bookings = bookingRepository.findByBookerIdCurrent(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), sortByStartDesc);
+                        .findByBookerIdAndStartIsAfter(userId, LocalDateTime.now(), pageable).toList();
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), sortByStartDesc);
+                        .findByBookerIdAndEndIsBefore(userId, LocalDateTime.now(), pageable).toList();
                 break;
             case ALL:
                 bookings = bookingRepository
-                        .findByBookerId(userId, sortByStartDesc);
+                        .findByBookerId(userId, pageable).toList();
                 break;
         }
         return mapper.makeDtoList(bookings);
     }
 
     @Override
-    public List<BookingDetailedDto> getAllByItemOwnerId(Long userId, String stateValue) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID: " + userId));
+    public List<BookingDetailedDto> getAllByItemOwnerId(Long userId, String stateValue, int from, int size) {
+        userCheck(userId);
 
         State state = State.getEnumValue(stateValue);
         List<Booking> bookings = new ArrayList<>();
+        Pageable pageable = PageRequest.of(from / size, size, sortByStartDesc);
 
         switch (state) {
             case REJECTED:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStatus(userId, REJECTED, sortByStartDesc);
+                        .findBookingByItemOwnerIdAndStatus(userId, REJECTED, pageable).toList();
                 break;
             case WAITING:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
+                        .findBookingByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, pageable).toList();
                 break;
             case CURRENT:
                 bookings = bookingRepository.findBookingsByItemOwnerIdCurrent(userId, LocalDateTime.now());
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndStartIsAfter(userId, LocalDateTime.now(), sortByStartDesc);
+                        .findBookingByItemOwnerIdAndStartIsAfter(userId, LocalDateTime.now(), pageable).toList();
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerIdAndEndIsBefore(userId, LocalDateTime.now(), sortByStartDesc);
+                        .findBookingByItemOwnerIdAndEndIsBefore(userId, LocalDateTime.now(), pageable).toList();
                 break;
             case ALL:
                 bookings = bookingRepository
-                        .findBookingByItemOwnerId(userId, sortByStartDesc);
+                        .findBookingByItemOwnerId(userId, pageable).toList();
                 break;
         }
         return mapper.makeDtoList(bookings);
+    }
+
+    private User userCheck(long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException("There is no user with this ID: " + userId));
     }
 }

@@ -4,10 +4,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemInRequestDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemMapper {
@@ -34,7 +36,7 @@ public class ItemMapper {
         if (comments != null) {
             dto.setComments(CommentMapper.toCommentDetailedDtoList(comments));
         }
-        item.setRequestId(item.getRequestId());
+        dto.setRequestId(item.getRequestId());
         return dto;
     }
 
@@ -43,8 +45,25 @@ public class ItemMapper {
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
+        item.setRequestId(itemDto.getRequestId());
         item.setOwnerId(ownerId);
-        item.setRequestId(item.getRequestId());
         return item;
+    }
+
+    public static ItemInRequestDto makeRequestItemDto(Item item) {
+        ItemInRequestDto dto = new ItemInRequestDto();
+        dto.setId(item.getId());
+        dto.setName(item.getName());
+        dto.setDescription(item.getDescription());
+        dto.setAvailable(item.getAvailable());
+        dto.setRequestId(item.getRequestId());
+        dto.setOwner(item.getOwnerId());
+        return dto;
+    }
+
+    public static List<ItemInRequestDto> makeRequestItemDtoList(List<Item> items) {
+        return items.stream()
+                .map(ItemMapper::makeRequestItemDto)
+                .collect(Collectors.toList());
     }
 }

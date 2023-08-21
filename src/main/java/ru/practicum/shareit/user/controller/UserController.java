@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.IUserService;
 import ru.practicum.shareit.user.service.UserMapper;
-import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,12 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final IUserService userService;
     private final UserMapper mapper;
 
     @GetMapping("/{userId}")
     public UserDto getById(@PathVariable Long userId) {
-        log.info("Get user with id: {}", userId);
+        log.info("Get user with id {}", userId);
         return mapper.makeDto(userService.getById(userId));
     }
 
@@ -34,14 +34,14 @@ public class UserController {
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto userDto) {
         User user = mapper.makeModel(userDto, null);
-        log.info("Create user: {}", user.toString());
+        log.info("Create user {}", user);
         return mapper.makeDto(userService.create(user));
     }
 
     @PatchMapping("/{userId}")
     public UserDto update(@RequestBody UserDto userDto, @PathVariable Long userId) {
         User user = mapper.makeModel(userDto, userId);
-        log.info("Update user: {}", user.toString());
+        log.info("Update user {}", user);
         return mapper.makeDto(userService.update(user));
     }
 

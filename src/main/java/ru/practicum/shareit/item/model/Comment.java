@@ -17,7 +17,7 @@ public class Comment {
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "text", nullable = false, length = 512)
+    @Column(name = "text", nullable = false)
     private String text;
     @ManyToOne
     @JoinColumn(name = "item_id")
