@@ -130,7 +130,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void patchBookingNoSuchElementExceptionTest() {
+    public void updateBookingNotFoundExceptionTest() {
         booking.setStatus(BookingStatus.WAITING);
         item.setOwnerId(1L);
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking));
@@ -144,7 +144,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void updateBookingIllegalArgumentExceptionTest() {
+    public void updateBookingBadRequestExceptionExceptionTest() {
         booking.setStatus(BookingStatus.WAITING);
         booking.setStatus(BookingStatus.APPROVED);
         when(bookingRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(booking));
@@ -178,7 +178,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void getByIdNoSuchElementExceptionTest() {
+    public void getByIdNotFoundExceptionExceptionTest() {
         user.setId(100L);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
@@ -191,7 +191,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStateRejectedTest() {
+    public void getAllByBookerStateRejectedTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -205,7 +205,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStateWaitingTest() {
+    public void getAllByBookerStateWaitingTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -219,7 +219,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStateCurrentTest() {
+    public void getAllByBookerStateCurrentTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -233,7 +233,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStateFutureTest() {
+    public void getAllByBookerStateFutureTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -247,7 +247,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStatePastTest() {
+    public void getAllByBookerStatePastTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -261,7 +261,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerStateAllTest() {
+    public void getAllByBookerStateAllTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -275,7 +275,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByBookerUnsupportedStatus() {
+    public void getAllByBookerUnsupportedStatus() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -289,7 +289,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStateRejectedTest() {
+    public void getAllByItemOwnerStateRejectedTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -304,7 +304,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStateWaitingTest() {
+    public void getAllByItemOwnerStateWaitingTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -319,7 +319,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStateCurrentTest() {
+    public void getAllByItemOwnerStateCurrentTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -334,7 +334,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStateFutureTest() {
+    public void getAllByItemOwnerStateFutureTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -349,7 +349,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStatePastTest() {
+    public void getAllByItemOwnerStatePastTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
@@ -364,7 +364,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllByItemOwnerStateAllTest() {
+    public void getAllByItemOwnerStateAllTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
         when(bookingRepository
