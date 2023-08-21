@@ -3,7 +3,6 @@ package ru.practicum.shareit.exceptionTest;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.exception.ErrorHandler;
 import ru.practicum.shareit.exception.ErrorResponse;
-import ru.practicum.shareit.exception.InternalServerErrorException;
 import ru.practicum.shareit.exception.UnsupportedStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,12 +17,5 @@ public class ErrorHandlerTest {
         ErrorResponse errorResponse = handler.handle(e);
         assertNotNull(errorResponse);
         assertEquals(errorResponse.getDescription(), "Unknown state: UNSUPPORTED_STATUS");
-    }
-
-    @Test
-    public void internalServerErrorExceptionTest() {
-        InternalServerErrorException e = new InternalServerErrorException("Error");
-        ErrorResponse errorResponse = handler.handle(e);
-        assertNotNull(errorResponse);
     }
 }

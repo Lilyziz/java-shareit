@@ -12,10 +12,4 @@ public class ErrorHandler {
     public ErrorResponse handle(UnsupportedStatusException e) {
         return new ErrorResponse("Unknown state: UNSUPPORTED_STATUS", e.getMessage());
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handle(Throwable e) {
-        return new ErrorResponse("internal server error: ", e.getMessage());
-    }
 }
