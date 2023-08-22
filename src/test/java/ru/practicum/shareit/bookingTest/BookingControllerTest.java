@@ -133,8 +133,8 @@ public class BookingControllerTest {
         BookingPostDto booking = new BookingPostDto();
         booking.setId(1L);
         booking.setItemId(1L);
-        booking.setStart(LocalDateTime.of(2023, 12, 12, 10, 0));
-        booking.setEnd(LocalDateTime.of(2023, 12, 20, 10, 0));
+        booking.setStart(LocalDateTime.now());
+        booking.setEnd(LocalDateTime.now().plusWeeks(1));
         return booking;
     }
 

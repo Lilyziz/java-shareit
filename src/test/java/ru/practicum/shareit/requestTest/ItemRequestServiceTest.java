@@ -83,7 +83,7 @@ public class ItemRequestServiceTest {
     void getAllTest() {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
 
-        when(requestRepository.findAll(any(Long.class), any(Pageable.class)))
+        when(requestRepository.findAllByRequesterId(any(Long.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
 
         when(itemRepository.findAllByRequestId(any(Long.class))).thenReturn(new ArrayList<>());

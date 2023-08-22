@@ -54,7 +54,7 @@ public class ItemRequestServiceImpl implements IItemRequestService {
         userCheck(userId);
 
         Pageable pageable = PageRequest.of(from, size, sortByCreatedDesc);
-        Page<Request> requests = requestRepository.findAll(userId, pageable);
+        Page<Request> requests = requestRepository.findAllByRequesterId(userId, pageable);
 
         return mapper.toRequestWithItemsDtoList(requests, itemRepository);
     }
