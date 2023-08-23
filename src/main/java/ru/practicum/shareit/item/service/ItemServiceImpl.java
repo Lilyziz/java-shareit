@@ -63,7 +63,7 @@ public class ItemServiceImpl implements IItemService {
     @Transactional
     public ItemDto getById(Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new NotFoundException("There is no item with this ID"));
+                () -> new NotFoundException("There is no item with this ID " + itemId));
         List<Comment> comments = commentRepository.findByItemId(itemId);
 
         if (item.getOwnerId().equals(userId)) {
@@ -76,16 +76,18 @@ public class ItemServiceImpl implements IItemService {
     @Transactional
     public CommentDto createComment(CreateCommentDto dto, Long itemId, Long userId) {
         if (dto.getText().isBlank() || dto.getText().isEmpty()) {
-            throw new BadRequestException("");
+            throw new BadRequestException("Blank or empty comment for item with ID "
+                    + itemId + " from user with ID " + userId);
         }
 
         Item item = itemRepository.findById(itemId).orElseThrow(
-                () -> new NotFoundException("There is no item with this ID"));
+                () -> new NotFoundException("There is no item with this ID" + itemId));
         User author = userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID"));
+                () -> new NotFoundException("There is no user with this ID " + userId));
 
         if (bookingRepository.findBookingsForAddComments(itemId, userId, LocalDateTime.now()).isEmpty()) {
-            throw new BadRequestException("");
+            throw new BadRequestException("There are no bookings for your comment for item with ID "
+                    + itemId + " from user with ID " + userId);
         }
         Comment comment = CommentMapper.toModel(dto, item, author);
         comment = commentRepository.save(comment);
@@ -96,7 +98,7 @@ public class ItemServiceImpl implements IItemService {
     @Override
     public List<ItemDto> getAll(Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundException("There is no user with this ID: " + userId));
+                () -> new NotFoundException("There is no user with this ID " + userId));
 
         List<ItemDto> result = new ArrayList<>();
         fillItemDtoList(result, itemRepository.findAllByOwnerIdOrderByIdAsc(userId), userId);
@@ -139,22 +141,21 @@ public class ItemServiceImpl implements IItemService {
 
     private ItemDto constructItemDtoForOwner(Item item, LocalDateTime now, List<Comment> comments) {
         Booking lastBooking = bookingRepository.findBookingByItemIdAndStartBefore(
-                item.getId(), now, Sort.by("start").descending())
+                        item.getId(), now, Sort.by("start").descending())
                 .stream().findFirst().orElse(null);
 
         Booking nextBooking = bookingRepository.findBookingByItemIdAndStartAfter(
-                item.getId(), now, Sort.by("start").ascending())
+                        item.getId(), now, Sort.by("start").ascending())
                 .stream().filter(e -> !e.getStatus().equals(BookingStatus.REJECTED)).findFirst().orElse(null);
 
         return ItemMapper.makeDto(item, lastBooking, nextBooking, comments);
     }
 
     private void fillItemDtoList(List<ItemDto> targetList, List<Item> foundItems, Long userId) {
-        LocalDateTime now = LocalDateTime.now();
         for (Item item : foundItems) {
             List<Comment> comments = commentRepository.findByItemIdOrderByCreatedDesc(item.getId());
             if (item.getOwnerId().equals(userId)) {
-                ItemDto dto = constructItemDtoForOwner(item, now, comments);
+                ItemDto dto = constructItemDtoForOwner(item, LocalDateTime.now(), comments);
                 targetList.add(dto);
             } else {
                 targetList.add(ItemMapper.makeDto(item, comments));

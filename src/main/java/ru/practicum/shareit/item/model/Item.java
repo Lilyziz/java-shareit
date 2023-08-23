@@ -21,8 +21,8 @@ public class Item {
     private String description;
     @Column(name = "is_available")
     private Boolean available;
-    @Column(name = "owner_id")
-    private Long ownerId;
     @Column(name = "request_id")
     private Long requestId;
+    @Column(name = "owner_id")
+    private Long ownerId;
 }

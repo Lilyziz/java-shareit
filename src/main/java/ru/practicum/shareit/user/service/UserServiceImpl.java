@@ -49,11 +49,13 @@ public class UserServiceImpl implements IUserService {
     private User updateUser(User user) {
         User updatingUser = getById(user.getId());
         Optional.ofNullable(user.getName()).ifPresent(updatingUser::setName);
+
         String oldEmail = updatingUser.getEmail();
         String newEmail = user.getEmail();
         if (newEmail != null && !newEmail.isBlank() && !oldEmail.equals(newEmail)) {
             updatingUser.setEmail(newEmail);
         }
+
         return updatingUser;
     }
 }
