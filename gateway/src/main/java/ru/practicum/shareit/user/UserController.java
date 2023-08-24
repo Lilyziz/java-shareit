@@ -20,33 +20,33 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> create(@Validated({Create.class}) @RequestBody UserDto userDto) {
-        log.info("Creating user {}", userDto);
+        log.info("Create user {}", userDto);
         return userClient.create(userDto);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getById(@NotNull(message = ("userID is null"))
                                                    @Min(1) @PathVariable Long userId) {
-        log.info("Searching userId={}", userId);
+        log.info("Get user with id {}", userId);
         return userClient.getById(userId);
     }
 
     @GetMapping
     public ResponseEntity<Object> getAll() {
-        log.info("Searching all users");
+        log.info("Get list of all users");
         return userClient.getAll();
     }
 
     @PatchMapping("/{userId}")
     public ResponseEntity<Object> update(@NotNull(message = "userID is null") @Min(1) @PathVariable Long userId,
                                              @Validated({Update.class}) @RequestBody UserDto userDto) {
-        log.info("Updating userId={}, user {}", userId, userDto);
+        log.info("Update user {}", userDto);
         return userClient.update(userId, userDto);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteById(@NotNull(message = ("userID is null")) @Min(1) @PathVariable Long userId) {
-        log.info("Deleting userId={}", userId);
+        log.info("Delete user with id {}", userId);
         userClient.deleteById(userId);
     }
 }
