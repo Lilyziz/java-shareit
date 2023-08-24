@@ -8,7 +8,6 @@ import ru.practicum.shareit.request.dto.PostResponseRequestDto;
 import ru.practicum.shareit.request.dto.RequestWithItemsDto;
 import ru.practicum.shareit.request.service.IItemRequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j

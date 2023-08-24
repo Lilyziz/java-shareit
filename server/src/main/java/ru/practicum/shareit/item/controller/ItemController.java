@@ -10,7 +10,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.IItemService;
 import ru.practicum.shareit.item.service.ItemMapper;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
