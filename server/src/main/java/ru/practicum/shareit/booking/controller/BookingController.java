@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDetailedDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -13,7 +12,6 @@ import ru.practicum.shareit.booking.validation.BookingDatesValidator;
 
 import java.util.List;
 
-@Validated
 @Slf4j
 @RestController
 @AllArgsConstructor
