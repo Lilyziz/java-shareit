@@ -11,7 +11,6 @@ import ru.practicum.shareit.booking.service.BookingMapper;
 import ru.practicum.shareit.booking.service.IBookingService;
 import ru.practicum.shareit.booking.validation.BookingDatesValidator;
 
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Validated
@@ -42,7 +41,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDetailedDto> getAllByItemOwnerId(@RequestHeader(header) Long userId,
                                                         @RequestParam(defaultValue = "ALL") String state,
-                                                        @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                        @RequestParam(defaultValue = "0") int from,
                                                         @RequestParam(defaultValue = "20") int size) {
         log.info("Get list of all bookings with state {} from user with id {}", state, userId);
         return bookingService.getAllByItemOwnerId(userId, state, from, size);
