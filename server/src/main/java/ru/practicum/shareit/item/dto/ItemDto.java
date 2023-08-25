@@ -14,12 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ItemDto {
     private Long id;
-    @NotNull
-    @NotBlank
     private String name;
-    @NotNull
     private String description;
-    @NotNull
     private Boolean available;
     private BookingInItemDto lastBooking;
     private BookingInItemDto nextBooking;

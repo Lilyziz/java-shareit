@@ -12,9 +12,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserDto {
     private Long id;
-    @NotNull
     private String name;
-    @Email
-    @NotNull
     private String email;
 }
