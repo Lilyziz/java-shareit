@@ -19,22 +19,23 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 public class ItemRequestController {
     private final ItemRequestClient itemRequestClient;
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
-    public ResponseEntity<Object> createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> create(@RequestHeader(header) Long userId,
                                                     @Valid @RequestBody PostRequestDto requestDto) {
         log.info("Create item request by user {}", userId);
-        return itemRequestClient.createItemRequest(userId, requestDto);
+        return itemRequestClient.create(userId, requestDto);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getItemRequestsByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getAllByUserId(@RequestHeader(header) Long userId) {
         log.info("Get all user {} item requests", userId);
-        return itemRequestClient.getItemRequestsByUser(userId);
+        return itemRequestClient.getAllByUserId(userId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ResponseEntity<Object> getAll(@RequestHeader(header) long userId,
                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Get all item requests without user {}", userId);
@@ -42,9 +43,9 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getItemRequest(@PathVariable Long requestId,
-                                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getById(@PathVariable Long requestId,
+                                                 @RequestHeader(header) Long userId) {
         log.info("Get item request {}", requestId);
-        return itemRequestClient.getItemRequest(requestId, userId);
+        return itemRequestClient.getById(requestId, userId);
     }
 }

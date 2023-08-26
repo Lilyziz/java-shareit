@@ -13,11 +13,9 @@ import java.util.Map;
 
 @Service
 public class ItemRequestClient extends BaseClient {
-    private static final String API_PREFIX = "/requests";
-
     public ItemRequestClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
-                builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
+                builder.uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + "/requests"))
                         .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                         .build()
         );
@@ -30,15 +28,15 @@ public class ItemRequestClient extends BaseClient {
         return get("/all?from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> createItemRequest(long userId, PostRequestDto requestDto) {
+    public ResponseEntity<Object> create(long userId, PostRequestDto requestDto) {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> getItemRequestsByUser(long userId) {
+    public ResponseEntity<Object> getAllByUserId(long userId) {
         return get("", userId);
     }
 
-    public ResponseEntity<Object> getItemRequest(Long requestId, long userId) {
+    public ResponseEntity<Object> getById(Long requestId, long userId) {
         return get("/" + requestId, userId);
     }
 }
