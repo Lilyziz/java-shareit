@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,9 +27,9 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> getAllByBooker(@RequestHeader(header) long userId,
-                                              @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                 @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         State state = State.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -39,11 +38,11 @@ public class BookingController {
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getAllByItemOwnerId(@RequestHeader(header) long userId,
-                                                         @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
-                                                             Integer from,
-                                                         @Positive @RequestParam(name = "size", defaultValue = "10")
-                                                             Integer size) {
+                                                      @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
+                                                      Integer from,
+                                                      @Positive @RequestParam(name = "size", defaultValue = "10")
+                                                      Integer size) {
         State state = State.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking owner with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -52,22 +51,22 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestHeader(header) long userId,
-                                           @RequestBody @Valid BookItemPostDto requestDto) {
+                                         @RequestBody @Valid BookItemPostDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.create(userId, requestDto);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getById(@RequestHeader(header) long userId,
-                                             @PathVariable Long bookingId) {
+                                          @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getById(userId, bookingId);
     }
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> update(@RequestHeader(header) long userId,
-                                                @PathVariable Long bookingId,
-                                                @RequestParam boolean approved) {
+                                         @PathVariable Long bookingId,
+                                         @RequestParam boolean approved) {
         log.info("Approve status of booking {}", bookingId);
         return bookingClient.update(userId, bookingId, approved);
     }
