@@ -27,7 +27,7 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getItems(long userId, Integer from, Integer size) {
+    public ResponseEntity<Object> getAll(long userId, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
@@ -35,15 +35,15 @@ public class ItemClient extends BaseClient {
         return get("?from={from}&size={size}", userId, parameters);
     }
 
-    public ResponseEntity<Object> getItem(Long itemId, long userId) {
+    public ResponseEntity<Object> getById(Long itemId, long userId) {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> createItem(long userId, ItemInRequestDto requestDto) {
+    public ResponseEntity<Object> create(long userId, ItemInRequestDto requestDto) {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> updateItem(ItemInRequestDto requestDto, Long itemId, long userId) {
+    public ResponseEntity<Object> update(ItemInRequestDto requestDto, Long itemId, long userId) {
         return patch("/" + itemId, userId, requestDto);
     }
 
@@ -51,7 +51,7 @@ public class ItemClient extends BaseClient {
         return delete("/" + itemId);
     }
 
-    public ResponseEntity<Object> searchItem(String text, long userId) {
+    public ResponseEntity<Object> getByRequest(String text, long userId) {
         Map<String, Object> parameters = Map.of(
                 "text", text
         );
