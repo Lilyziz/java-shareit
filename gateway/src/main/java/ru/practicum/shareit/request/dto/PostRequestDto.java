@@ -1,15 +1,15 @@
 package ru.practicum.shareit.request.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostRequestDto {
-    @NotNull
-    String description;
+    @NotBlank
+    private String description;
 }
